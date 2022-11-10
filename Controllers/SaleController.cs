@@ -84,5 +84,22 @@ namespace tech_test_payment_api.Controllers
                 return BadRequest("O status informado é inválido!");
             }
         }
+
+        // Get By OrderSale (id)
+        [HttpGet("GetOrderSaleId/{id}")]
+        public IActionResult GetOrderSaleId(int id)
+        {
+            var orderSaleDatabase = _context.OrderSales.FirstOrDefault(os => os.Id == id);
+
+            if (orderSaleDatabase == null)
+            {
+                return NotFound("Não foi possível encontrar o produto!");
+            }
+
+            orderSaleDatabase.Products = _context.Products.Where(os => os.SellerId == id).ToList();
+            orderSaleDatabase.Seller = _context.Sellers.FirstOrDefault(os => os.Id == orderSaleDatabase.SellerId);
+
+            return Ok(orderSaleDatabase);
+        }
     }
 }
