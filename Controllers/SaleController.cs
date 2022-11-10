@@ -1,6 +1,7 @@
 using tech_test_payment_api.Contexts;
 using tech_test_payment_api.Models;
 using tech_test_payment_api.Enums;
+using tech_test_payment_api.Validations;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,6 +57,32 @@ namespace tech_test_payment_api.Controllers
             _context.SaveChanges();
 
             return Ok(orderSale);
+        }
+
+        // Update Status Transition - OrderSale
+        [HttpPut("UpdateStatusTransitions")]
+        public IActionResult UpdateStatusTransitions(int idOrderSale, StatusTransitions newStatus)
+        {
+            var orderSaleDatabase = _context.OrderSales.FirstOrDefault(os => os.Id == idOrderSale);
+
+            if (orderSaleDatabase == null)
+            {
+                return NotFound("Não foi possível encontrar o pedido solicitado!");
+            }
+
+            var statusValidation = Validations.ValidationStatus.ValidationStatusCurrent(orderSaleDatabase.Status, newStatus);
+
+            if (statusValidation)
+            {
+                orderSaleDatabase.Status = newStatus;
+                _context.SaveChanges();
+
+                return Ok("O status do pedido foi alterado com sucesso!");
+            }
+            else
+            {
+                return BadRequest("O status informado é inválido!");
+            }
         }
     }
 }
