@@ -1,3 +1,4 @@
+using tech_test_payment_api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace tech_test_payment_api.Contexts
@@ -8,5 +9,9 @@ namespace tech_test_payment_api.Contexts
         {
 
         }
+
+        public DbSet<Seller> Sellers { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<OrderSale> OrderSales { get; set; }
     }
 }
